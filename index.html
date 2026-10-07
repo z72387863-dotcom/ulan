@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Wulan 16th</title>
+<style>
+body{margin:0;background:#FFB6D5;overflow:hidden;font-family:sans-serif}
+canvas{display:block;margin:0 auto;background:linear-gradient(#87D4FF,#FFE4EC);border-radius:12px}
+#ui{position:fixed;top:12px;left:50%;transform:translateX(-50%);background:white;padding:8px 18px;border-radius:20px;font-weight:bold;z-index:10}
+#ctrl{position:fixed;bottom:15px;width:100%;display:flex;justify-content:space-between;padding:0 15px;box-sizing:border-box}
+.b{width:65px;height:65px;background:white;border-radius:50%;border:4px solid #FF8FAB;display:flex;align-items:center;justify-content:center;font-size:24px}
+#win{position:fixed;inset:0;background:#FFD6E7;display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;z-index:99}
+</style>
+</head>
+<body>
+<div id="ui">bantu wulan ke babang ganteng! 💝 <span id="p">0%</span></div>
+<canvas id="c" width="900" height="500"></canvas>
+<div id="ctrl"><div style="display:flex;gap:10px"><div class="b" id="L">◀</div><div class="b" id="R">▶</div></div><div class="b" id="J">▲</div></div>
+<div id="win"><h1 style="color:#FF2E7E">happy birthday princes kesayangan aku! 🎂</h1><p id="txt" style="background:white;padding:18px;border-radius:14px;max-width:500px;text-align:left;white-space:pre-wrap;line-height:1.6"></p><button onclick="location.reload()" style="margin-top:15px;padding:10px 20px;background:#FF2E7E;color:white;border:none;border-radius:20px">Main Lagi</button></div>
+<audio id="m" loop src="https://files.catbox.moe/5wttdc.mp3"></audio>
+<script>
+const c=document.getElementById('c'),x=c.getContext('2d'),m=document.getElementById('m');
+let k={},cam=0,won=false;
+let pl={x:50,y:200,vx:0,vy:0,g:false};
+let platforms=[{x:0,y:400,w:400,h:100},{x:450,y:350,w:200,h:20},{x:700,y:300,w:200,h:20},{x:1000,y:350,w:200,h:20},{x:1300,y:300,w:250,h:20},{x:1700,y:250,w:300,h:20},{x:2100,y:400,w:400,h:100}];
+let goal={x:2250,y:310};
+function drawGirl(X,Y){
+x.fillStyle='#FF6BA8';x.fillRect(X-14,Y-10,28,22);x.fillStyle='#FFDDBB';x.beginPath();x.arc(X,Y-18,16,0,7);x.fill();x.fillStyle='#FF4D9E';x.fillRect(X-16,Y-26,32,12);x.fillStyle='black';x.fillRect(X-6,Y-20,3,3);x.fillRect(X+3,Y-20,3,3);
+}
+function drawBoy(X,Y){
+x.fillStyle='#4A90E2';x.fillRect(X-14,Y-8,28,20);x.fillStyle='#FFDDBB';x.beginPath();x.arc(X,Y-16,14,0,7);x.fill();x.fillStyle='#333';x.fillRect(X-12,Y-24,24,8);
+x.fillStyle='#FFD93D';x.fillRect(X+12,Y,14,14);
+}
+function upd(){
+let mv=0;if(k['ArrowLeft']||k['a'])mv=-1;if(k['ArrowRight']||k['d'])mv=1;
+pl.vx=mv*5;pl.vy+=0.6;pl.x+=pl.vx;pl.y+=pl.vy;pl.g=false;
+for(let p of platforms){if(pl.x+15>p.x&&pl.x-15<p.x+p.w&&pl.vy>0&&pl.y>p.y-20&&pl.y<p.y+10){pl.y=p.y-10;pl.vy=0;pl.g=true}}
+if(pl.y>600){pl.x=50;pl.y=200;pl.vy=0}
+cam=pl.x-200;if(cam<0)cam=0;if(cam>1700)cam=1700;
+document.getElementById('p').innerText=Math.min(100,Math.floor(pl.x/22))+'%';
+if(!won&&Math.abs(pl.x-goal.x)<30&&Math.abs(pl.y-goal.y)<40){won=true;document.getElementById('win').style.display='flex';m.play();
+let t=`happy birthday princess kesayangan akuu semoga di ulang tahun kamu yang ke 16 kebaikan dan keberuntungan selalu ngikutin kamu ya sayang maapp soal bulan bulan sebelum nya sayaang terima kasih kamu uda selalu ada buat aku selalu jadi rumah ternyaman di saat aku lagi capee di saat aku lagi butuh kamu sayangg kitaa sama sama berproses ya sayang kita jalanin hubungan ini smaa samaa sayangg semoga samaa kamu bukan cuma sementara tapi selama nya sayangg sayang dedee banyakk banyakk💞\n\n- dari babang ganteng 💙`;
+let i=0;let el=document.getElementById('txt');(function type(){if(i<t.length){el.innerText+=t[i++];setTimeout(type,25)}})();
+}
+}
+function drw(){
+x.clearRect(0,0,900,500);
+x.save();x.translate(-cam,0);
+for(let p of platforms){x.fillStyle='white';x.fillRect(p.x,p.y,p.w,p.h);x.fillStyle='#FF8FAB';x.fillRect(p.x,p.y,p.w,6)}
+drawBoy(goal.x,goal.y);drawGirl(pl.x,pl.y);
+x.restore();
+}
+(function loop(){upd();drw();requestAnimationFrame(loop)})();
+addEventListener('keydown',e=>{k[e.key]=true;if(e.code==='Space'&&pl.g)pl.vy=-11});
+addEventListener('keyup',e=>k[e.key]=false);
+document.getElementById('L').ontouchstart=()=>k['ArrowLeft']=true;document.getElementById('L').ontouchend=()=>k['ArrowLeft']=false;
+document.getElementById('R').ontouchstart=()=>k['ArrowRight']=true;document.getElementById('R').ontouchend=()=>k['ArrowRight']=false;
+document.getElementById('J').ontouchstart=()=>{if(pl.g)pl.vy=-11;m.play()};
+c.onclick=()=>m.play();
+</script>
+</body>
+</html>
